@@ -1,0 +1,2225 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HR Role On Today Transformation</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800&display=swap');
+
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Heebo', sans-serif;
+    }
+
+    body {
+      background: #ffffff;
+      color: #3a3a3a;
+    }
+
+    /* ── Slide Container ── */
+    .slideshow {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* ── Individual Slides ── */
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 60px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      transform: translateX(-40px);
+    }
+
+    .slide.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(0);
+    }
+
+    .slide.exit-left {
+      opacity: 0;
+      transform: translateX(40px);
+    }
+
+    .slide.exit-right {
+      opacity: 0;
+      transform: translateX(-40px);
+    }
+
+    /* ── Slide Content ── */
+    .slide-number {
+      font-size: 0.85rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #DC2626;
+      text-shadow: 0 0 8px rgba(220, 38, 38, 0.3);
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .slide h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
+      color: #1a1a1a;
+      text-align: center;
+      line-height: 1.3;
+      margin-bottom: 20px;
+    }
+
+    .slide p {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      font-weight: 300;
+      color: #666666;
+      text-align: center;
+      max-width: 700px;
+      line-height: 1.7;
+    }
+
+    /* ── Navigation Buttons ── */
+    .nav-buttons {
+      position: fixed;
+      top: 50%;
+      left: 0;
+      right: 0;
+      transform: translateY(-50%);
+      display: flex;
+      justify-content: space-between;
+      padding: 0 24px;
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .nav-btn {
+      pointer-events: auto;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(60, 60, 60, 0.15);
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #3a3a3a;
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    .nav-btn:hover {
+      background: rgba(220, 38, 38, 0.06);
+      border-color: #DC2626;
+      color: #DC2626;
+      transform: scale(1.08);
+      box-shadow: 0 0 15px rgba(220, 38, 38, 0.2), 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .nav-btn:active {
+      transform: scale(0.95);
+      transition-duration: 0.1s;
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.25;
+      cursor: default;
+      pointer-events: none;
+    }
+
+    .nav-btn svg {
+      width: 20px;
+      height: 20px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    /* ── Dot Navigation ── */
+    .dot-nav {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      z-index: 100;
+      padding: 10px 20px;
+      border-radius: 40px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(220, 38, 38, 0.08);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: rgba(60, 60, 60, 0.2);
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      border: none;
+      outline: none;
+    }
+
+    .dot:hover {
+      background: rgba(60, 60, 60, 0.4);
+      transform: scale(1.2);
+      box-shadow: 0 0 8px rgba(220, 38, 38, 0.2);
+    }
+
+    .dot.active {
+      background: #DC2626;
+      width: 28px;
+      border-radius: 6px;
+      box-shadow: 0 0 8px rgba(220, 38, 38, 0.4), 0 0 20px rgba(220, 38, 38, 0.2);
+    }
+
+    /* ── Progress Bar ── */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #DC2626, #EF4444);
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 200;
+      border-radius: 0 2px 2px 0;
+      box-shadow: 0 0 8px rgba(220, 38, 38, 0.4), 0 0 20px rgba(220, 38, 38, 0.15);
+    }
+
+    /* ── Keyboard Hint ── */
+    .keyboard-hint {
+      position: fixed;
+      bottom: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.75rem;
+      color: rgba(60, 60, 60, 0.3);
+      letter-spacing: 1px;
+      z-index: 100;
+      transition: opacity 0.5s;
+    }
+
+    .keyboard-hint.hidden {
+      opacity: 0;
+    }
+
+    /* ── Layout: Title ── */
+    .slide[data-layout="title"] {
+      background: radial-gradient(ellipse at center, rgba(220, 38, 38, 0.06) 0%, rgba(220, 38, 38, 0.02) 40%, transparent 70%);
+    }
+
+    /* ── Layout: Content ── */
+    .slide[data-layout="content"] {
+      align-items: flex-start;
+      padding: 80px 120px;
+    }
+
+    /* ── Layout: Split ── */
+    .slide[data-layout="split"] {
+      flex-direction: row;
+      gap: 60px;
+      padding: 80px;
+    }
+
+    /* ── Layout: Guru ── */
+    .slide[data-layout="guru"] {
+      justify-content: flex-end;
+      padding-bottom: 100px;
+    }
+
+    .guru-img {
+      max-height: 55vh;
+      object-fit: contain;
+      filter:
+        drop-shadow(0 0 6px rgba(220, 38, 38, 0.3))
+        drop-shadow(0 0 15px rgba(220, 38, 38, 0.15));
+      margin-bottom: 24px;
+    }
+
+    /* ── Layout: About ── */
+    .slide[data-layout="about"] {
+      background: radial-gradient(ellipse at center, rgba(220, 38, 38, 0.04) 0%, transparent 60%);
+      flex-direction: row;
+      padding: 60px 80px 100px;
+      gap: 50px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .about-photo {
+      flex-shrink: 0;
+      max-height: 65vh;
+      object-fit: contain;
+      filter:
+        drop-shadow(0 0 6px rgba(220, 38, 38, 0.3))
+        drop-shadow(0 0 15px rgba(220, 38, 38, 0.15));
+    }
+
+    .about-info {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 550px;
+    }
+
+    .about-info .slide-number {
+      margin-bottom: 8px;
+    }
+
+    .about-info h1 {
+      text-align: right;
+      margin-bottom: 12px;
+    }
+
+    .about-info .about-role {
+      font-size: clamp(1.1rem, 2.2vw, 1.4rem);
+      font-weight: 400;
+      color: #DC2626;
+      text-align: right;
+      margin-bottom: 16px;
+      max-width: none;
+    }
+
+    .about-info .about-bio {
+      font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+      font-weight: 300;
+      color: #666666;
+      text-align: right;
+      max-width: none;
+      line-height: 1.8;
+      margin-bottom: 28px;
+    }
+
+    .about-tags {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .about-tag {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 12px;
+      background: rgba(220, 38, 38, 0.04);
+      border: 1px solid rgba(220, 38, 38, 0.12);
+      color: #3a3a3a;
+      font-size: 0.85rem;
+      font-weight: 400;
+      line-height: 1.5;
+      transition: all 0.3s;
+    }
+
+    .about-tag:hover {
+      border-color: rgba(220, 38, 38, 0.3);
+      background: rgba(220, 38, 38, 0.08);
+      box-shadow: 0 0 15px rgba(220, 38, 38, 0.1);
+    }
+
+    .about-tag-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(220, 38, 38, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 0.9rem;
+      color: #DC2626;
+    }
+
+    /* ── Layout: Quote ── */
+    .slide[data-layout="quote"] {
+      background: radial-gradient(ellipse at center, rgba(220, 38, 38, 0.04) 0%, transparent 60%);
+      padding: 80px 100px 120px;
+      gap: 0;
+    }
+
+    .slide .quote-text {
+      font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+      font-weight: 300;
+      color: #3a3a3a;
+      text-align: center;
+      width: 100%;
+      max-width: 1100px;
+      line-height: 1.5;
+      margin-bottom: 40px;
+      position: relative;
+    }
+
+    .quote-text::before {
+      content: '\201C';
+      font-size: 5rem;
+      color: rgba(220, 38, 38, 0.2);
+      position: absolute;
+      top: -40px;
+      right: -30px;
+      font-family: Georgia, serif;
+      line-height: 1;
+    }
+
+    .quote-text mark {
+      background: none;
+      color: #DC2626;
+      font-weight: 600;
+    }
+
+    .quote-source {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 30px;
+      background: rgba(220, 38, 38, 0.04);
+      border: 1px solid rgba(220, 38, 38, 0.15);
+      color: #666666;
+      font-size: 0.85rem;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .quote-source:hover {
+      border-color: #DC2626;
+      color: #DC2626;
+      background: rgba(220, 38, 38, 0.08);
+      box-shadow: 0 0 15px rgba(220, 38, 38, 0.15);
+    }
+
+    .quote-source svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    /* ── Layout: Timeline ── */
+    .slide[data-layout="timeline"] {
+      background: radial-gradient(ellipse at center, rgba(220, 38, 38, 0.04) 0%, transparent 60%);
+      padding: 60px 80px 100px;
+      gap: 24px;
+    }
+
+    .timeline-track {
+      display: flex;
+      direction: ltr;
+      align-items: flex-start;
+      width: 85%;
+      max-width: 1100px;
+      position: relative;
+      margin-top: 20px;
+    }
+
+    .timeline-track::before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 5%;
+      right: 5%;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(220, 38, 38, 0.1), rgba(220, 38, 38, 0.3), rgba(220, 38, 38, 0.1));
+      z-index: 0;
+    }
+
+    .tl-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tl-node {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 2px solid rgba(220, 38, 38, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+      box-shadow: 0 2px 8px rgba(220, 38, 38, 0.1);
+    }
+
+    .tl-node svg {
+      width: 22px;
+      height: 22px;
+      stroke: #3a3a3a;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tl-item:last-child .tl-node {
+      background: #ffffff;
+      border-color: #DC2626;
+      box-shadow: 0 0 12px rgba(220, 38, 38, 0.3), 0 0 30px rgba(220, 38, 38, 0.15);
+    }
+
+    .tl-item:last-child .tl-node svg {
+      stroke: #DC2626;
+    }
+
+    .tl-year {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #DC2626;
+      letter-spacing: 1px;
+    }
+
+    .tl-title {
+      font-size: clamp(0.9rem, 1.5vw, 1.1rem);
+      font-weight: 600;
+      color: #1a1a1a;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .tl-desc {
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: #666666;
+      text-align: center;
+      line-height: 1.5;
+      max-width: 160px;
+    }
+
+    /* ── Layout: Cards ── */
+    .slide[data-layout="cards"] {
+      background: radial-gradient(ellipse at center, rgba(220, 38, 38, 0.04) 0%, transparent 60%);
+      padding: 50px 80px 100px;
+      gap: 0;
+    }
+
+    .slide[data-layout="cards"] h1 {
+      margin-bottom: 6px;
+    }
+
+    .flow-chart {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin: 24px 0 32px;
+    }
+
+    .flow-step {
+      padding: 10px 24px;
+      border-radius: 10px;
+      background: rgba(220, 38, 38, 0.04);
+      border: 1px solid rgba(220, 38, 38, 0.15);
+      color: #1a1a1a;
+      font-size: 0.95rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .flow-arrow {
+      color: #DC2626;
+      font-size: 1.2rem;
+      padding: 0 12px;
+    }
+
+    .cards-grid {
+      display: flex;
+      gap: 20px;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .content-card {
+      flex: 1;
+      padding: 24px;
+      border-radius: 16px;
+      background: rgba(220, 38, 38, 0.02);
+      border: 1px solid rgba(220, 38, 38, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.3s;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .content-card:hover {
+      border-color: rgba(220, 38, 38, 0.25);
+      background: rgba(220, 38, 38, 0.05);
+      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.08);
+    }
+
+    .card-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(220, 38, 38, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card-icon svg {
+      width: 20px;
+      height: 20px;
+      stroke: #DC2626;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.4;
+    }
+
+    .card-desc {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: #666666;
+      line-height: 1.6;
+    }
+
+    /* ── Layout: PRD ── */
+    .slide[data-layout="prd"] {
+      background: radial-gradient(ellipse at center, rgba(220, 38, 38, 0.04) 0%, transparent 60%);
+      flex-direction: row;
+      padding: 50px 80px 100px;
+      gap: 50px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .prd-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 520px;
+    }
+
+    .prd-content .slide-number {
+      margin-bottom: 8px;
+    }
+
+    .prd-content h1 {
+      text-align: right;
+      font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+      margin-bottom: 8px;
+    }
+
+    .prd-content .prd-subtitle {
+      font-size: clamp(0.95rem, 1.8vw, 1.15rem);
+      font-weight: 300;
+      color: #666666;
+      text-align: right;
+      max-width: none;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .prd-items {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+
+    .prd-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      background: rgba(220, 38, 38, 0.03);
+      border: 1px solid rgba(220, 38, 38, 0.1);
+      color: #3a3a3a;
+      font-size: 0.9rem;
+      font-weight: 400;
+      line-height: 1.5;
+    }
+
+    .prd-item-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: rgba(220, 38, 38, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .prd-item-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: #DC2626;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .prd-tip {
+      padding: 14px 18px;
+      border-radius: 12px;
+      background: rgba(220, 38, 38, 0.04);
+      border: 1px solid rgba(220, 38, 38, 0.15);
+      width: 100%;
+    }
+
+    .prd-tip-label {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #DC2626;
+      letter-spacing: 1px;
+      margin-bottom: 6px;
+    }
+
+    .prd-tip-text {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: #666666;
+      line-height: 1.6;
+    }
+
+    .prd-visual {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .prd-frame {
+      border: 2px solid #DC2626;
+      border-radius: 14px;
+      padding: 8px;
+      box-shadow: 0 0 12px rgba(220, 38, 38, 0.2), 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .prd-frame img {
+      display: block;
+      max-height: 55vh;
+      max-width: 380px;
+      border-radius: 10px;
+      object-fit: contain;
+    }
+
+    .prd-frame-large img {
+      max-width: 1050px;
+      max-height: 82vh;
+    }
+
+    .prd-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 20px;
+      border-radius: 30px;
+      background: rgba(220, 38, 38, 0.06);
+      border: 1px solid rgba(220, 38, 38, 0.2);
+      color: #DC2626;
+      font-size: 0.85rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+
+    .prd-link:hover {
+      background: rgba(220, 38, 38, 0.12);
+      border-color: #DC2626;
+      box-shadow: 0 0 15px rgba(220, 38, 38, 0.2);
+    }
+
+    .prd-link svg {
+      width: 16px;
+      height: 16px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    /* ── Terminal Frame ── */
+    .terminal-frame {
+      background: #f5f5f5;
+      border: 1.5px solid rgba(220, 38, 38, 0.25);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+      width: 520px;
+      flex-shrink: 0;
+    }
+
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: rgba(220, 38, 38, 0.05);
+      border-bottom: 1px solid rgba(220, 38, 38, 0.1);
+    }
+
+    .terminal-bar .browser-dots span {
+      width: 10px;
+      height: 10px;
+    }
+
+    .terminal-bar-title {
+      font-size: 0.7rem;
+      color: rgba(220, 38, 38, 0.5);
+      font-family: 'Courier New', monospace;
+      margin-inline-start: 8px;
+    }
+
+    .terminal-body {
+      padding: 22px 20px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.82rem;
+      line-height: 1.8;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .terminal-prompt {
+      color: #DC2626;
+    }
+
+    .terminal-cmd {
+      color: #1a1a1a;
+    }
+
+    .terminal-output {
+      color: rgba(220, 38, 38, 0.5);
+      margin-top: 10px;
+    }
+
+    .terminal-output .file-created {
+      color: rgba(220, 38, 38, 0.7);
+    }
+
+    /* ── CC Points ── */
+    .cc-points {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cc-point {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .cc-point-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(220, 38, 38, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .cc-point-icon svg {
+      width: 14px;
+      height: 14px;
+      stroke: #DC2626;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .cc-point-title {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #DC2626;
+      margin-bottom: 2px;
+    }
+
+    .cc-point-desc {
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: #666666;
+      line-height: 1.5;
+    }
+
+    /* ── Checklist ── */
+    .checklist-wrap {
+      display: flex;
+      align-items: center;
+      gap: 80px;
+      width: 100%;
+      justify-content: center;
+    }
+
+    .checklist-icon-wrap {
+      flex-shrink: 0;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      border: 2px solid #DC2626;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 30px rgba(220, 38, 38, 0.2), 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    .checklist-icon-wrap svg {
+      width: 85px;
+      height: 85px;
+      stroke: #DC2626;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 10px rgba(220, 38, 38, 0.3));
+    }
+
+    .checklist-items {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      max-width: 520px;
+    }
+
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .checklist-check {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      border: 2px solid #DC2626;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+      box-shadow: 0 0 8px rgba(220, 38, 38, 0.2);
+    }
+
+    .checklist-check svg {
+      width: 16px;
+      height: 16px;
+      stroke: #DC2626;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .checklist-label {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #DC2626;
+      margin-bottom: 4px;
+    }
+
+    .checklist-desc {
+      font-size: 0.92rem;
+      font-weight: 300;
+      color: #666666;
+      line-height: 1.6;
+    }
+
+    /* ── Layout: Contact ── */
+    .contact-cards {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 16px;
+      margin-top: 10px;
+      max-width: 1050px;
+      width: 100%;
+    }
+
+    .contact-card:nth-child(-n+4) {
+      grid-column: span 2;
+    }
+
+    .contact-card:nth-child(5) {
+      grid-column: 2 / span 2;
+    }
+
+    .contact-card:nth-child(6) {
+      grid-column: 4 / span 2;
+    }
+
+    .contact-card:nth-child(7) {
+      grid-column: 6 / span 2;
+    }
+
+    .contact-card {
+      padding: 24px 18px;
+      border-radius: 16px;
+      background: rgba(0, 0, 0, 0.01);
+      border: 1px solid rgba(220, 38, 38, 0.1);
+      text-align: center;
+      transition: border-color 0.3s, box-shadow 0.3s;
+      text-decoration: none;
+      color: inherit;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .contact-card:hover {
+      border-color: rgba(220, 38, 38, 0.3);
+      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.08);
+    }
+
+    .contact-card-icon {
+      width: 48px;
+      height: 48px;
+      margin: 0 auto 14px;
+      border-radius: 50%;
+      background: rgba(220, 38, 38, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contact-card-icon svg {
+      width: 22px;
+      height: 22px;
+      stroke: #DC2626;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .contact-card-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #DC2626;
+      margin-bottom: 6px;
+    }
+
+    .contact-card-handle {
+      font-size: 0.85rem;
+      color: #1a1a1a;
+      font-weight: 400;
+      margin-bottom: 8px;
+    }
+
+    .contact-card-desc {
+      font-size: 0.78rem;
+      font-weight: 300;
+      color: #666666;
+      line-height: 1.5;
+    }
+
+    /* ── Layout: Agents ── */
+    .slide[data-layout="agents"] {
+      background: radial-gradient(ellipse at center, rgba(220, 38, 38, 0.04) 0%, transparent 60%);
+      padding: 40px 80px 100px;
+      gap: 0;
+    }
+
+    .slide[data-layout="agents"] h1 {
+      font-size: clamp(1.5rem, 3.5vw, 2.4rem);
+      margin-bottom: 4px;
+    }
+
+    .slide[data-layout="agents"] .agents-subtitle {
+      font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+      font-weight: 300;
+      color: #666666;
+      text-align: center;
+      max-width: none;
+      margin-bottom: 24px;
+    }
+
+    .agents-visual {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      margin-bottom: 28px;
+      position: relative;
+    }
+
+    .agent-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .agent-avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(220, 38, 38, 0.05);
+      border: 2px solid rgba(220, 38, 38, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+
+    .agent-avatar svg {
+      width: 24px;
+      height: 24px;
+      stroke: #DC2626;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .agent-orchestrator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .agent-orchestrator .agent-avatar {
+      width: 76px;
+      height: 76px;
+      border-color: #DC2626;
+      background: rgba(220, 38, 38, 0.08);
+      box-shadow: 0 0 16px rgba(220, 38, 38, 0.25), 0 4px 12px rgba(0, 0, 0, 0.06);
+    }
+
+    .agent-orchestrator .agent-avatar svg {
+      width: 32px;
+      height: 32px;
+    }
+
+    .agent-label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: #666666;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .agent-orchestrator .agent-label {
+      color: #DC2626;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .agent-trunk {
+      width: 2px;
+      height: 40px;
+      background: linear-gradient(180deg, #DC2626, rgba(220, 38, 38, 0.3));
+    }
+
+    .agent-sub-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 60px;
+      position: relative;
+      padding-top: 30px;
+    }
+
+    .agent-sub-row::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 28px;
+      right: 28px;
+      height: 2px;
+      background: rgba(220, 38, 38, 0.25);
+      z-index: 0;
+    }
+
+    .agent-sub-row .agent-node {
+      position: relative;
+    }
+
+    .agent-sub-row .agent-node::before {
+      content: '';
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 2px;
+      height: 30px;
+      background: rgba(220, 38, 38, 0.25);
+      z-index: 0;
+    }
+
+    .agent-sub-row .agent-avatar {
+      background: #ffffff;
+    }
+
+    .agents-cards {
+      display: flex;
+      gap: 20px;
+      width: 100%;
+      max-width: 1100px;
+    }
+
+    .agent-card {
+      flex: 1;
+      padding: 20px;
+      border-radius: 14px;
+      background: rgba(220, 38, 38, 0.02);
+      border: 1px solid rgba(220, 38, 38, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.3s;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .agent-card:hover {
+      border-color: rgba(220, 38, 38, 0.25);
+      background: rgba(220, 38, 38, 0.05);
+      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.08);
+    }
+
+    .agent-card-head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .agent-card-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: rgba(220, 38, 38, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .agent-card-icon svg {
+      width: 18px;
+      height: 18px;
+      stroke: #DC2626;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .agent-card-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.4;
+    }
+
+    .agent-card-desc {
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: #666666;
+      line-height: 1.6;
+    }
+
+    /* ── Layout: MVP ── */
+    .slide[data-layout="mvp"] {
+      background: radial-gradient(ellipse at center, rgba(220, 38, 38, 0.04) 0%, transparent 60%);
+      flex-direction: row;
+      padding: 50px 80px 100px;
+      gap: 70px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .mvp-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      max-width: 480px;
+    }
+
+    .mvp-content .slide-number {
+      margin-bottom: 8px;
+    }
+
+    .mvp-content h1 {
+      text-align: right;
+      font-size: clamp(1.5rem, 3vw, 2.2rem);
+      margin-bottom: 8px;
+    }
+
+    .mvp-content .mvp-subtitle {
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      font-weight: 600;
+      color: #DC2626;
+      text-align: right;
+      max-width: none;
+      margin-bottom: 20px;
+    }
+
+    .mvp-points {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .mvp-point {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .mvp-point-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(220, 38, 38, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .mvp-point-icon svg {
+      width: 16px;
+      height: 16px;
+      stroke: #DC2626;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .mvp-point-text {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .mvp-point-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      line-height: 1.4;
+    }
+
+    .mvp-point-desc {
+      font-size: 0.82rem;
+      font-weight: 300;
+      color: #666666;
+      line-height: 1.6;
+    }
+
+    .mvp-visual {
+      flex-shrink: 0;
+      max-width: 620px;
+      width: 50%;
+    }
+
+    .browser-frame {
+      border: 2px solid #DC2626;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 14px rgba(220, 38, 38, 0.15), 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    .browser-bar {
+      background: rgba(220, 38, 38, 0.04);
+      border-bottom: 1px solid rgba(220, 38, 38, 0.15);
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .browser-dots {
+      display: flex;
+      gap: 6px;
+    }
+
+    .browser-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(220, 38, 38, 0.3);
+      background: transparent;
+    }
+
+    .browser-dots span:nth-child(1) { border-color: rgba(255,95,87,0.5); }
+    .browser-dots span:nth-child(2) { border-color: rgba(255,189,46,0.5); }
+    .browser-dots span:nth-child(3) { border-color: rgba(39,201,63,0.5); }
+
+    .browser-url {
+      flex: 1;
+      background: rgba(245, 245, 245, 0.8);
+      border: 1px solid rgba(220, 38, 38, 0.1);
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 0.65rem;
+      color: rgba(220, 38, 38, 0.5);
+      font-family: monospace;
+      direction: ltr;
+      text-align: left;
+    }
+
+    .browser-frame img {
+      display: block;
+      width: 100%;
+      object-fit: contain;
+    }
+
+    /* ── Layout: Tools ── */
+    .slide[data-layout="tools"] {
+      background: radial-gradient(ellipse at center, rgba(220, 38, 38, 0.04) 0%, transparent 60%);
+      padding: 40px 60px 100px;
+      gap: 0;
+    }
+
+    .slide[data-layout="tools"] h1 {
+      font-size: clamp(1.6rem, 3.2vw, 2.2rem);
+      margin-bottom: 4px;
+    }
+
+    .slide[data-layout="tools"] .tools-subtitle {
+      font-size: clamp(0.9rem, 1.6vw, 1.05rem);
+      font-weight: 300;
+      color: #666666;
+      text-align: center;
+      max-width: 800px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .tools-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      width: 100%;
+      max-width: 1100px;
+      margin-bottom: 16px;
+    }
+
+    .tool-card {
+      padding: 18px 20px;
+      border-radius: 14px;
+      background: rgba(220, 38, 38, 0.02);
+      border: 1px solid rgba(220, 38, 38, 0.1);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: all 0.3s;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+
+    .tool-card:hover {
+      border-color: rgba(220, 38, 38, 0.25);
+      background: rgba(220, 38, 38, 0.05);
+      box-shadow: 0 4px 16px rgba(220, 38, 38, 0.08);
+    }
+
+    .tool-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .tool-card-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background: rgba(220, 38, 38, 0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .tool-card-icon svg {
+      width: 17px;
+      height: 17px;
+      stroke: #DC2626;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .tool-card-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .tool-card-edge {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #DC2626;
+      line-height: 1.5;
+    }
+
+    .tool-card-when {
+      font-size: 0.85rem;
+      font-weight: 300;
+      color: #666666;
+      line-height: 1.55;
+    }
+
+    .tool-card-when strong {
+      color: #3a3a3a;
+      font-weight: 500;
+    }
+
+    .tools-tip {
+      padding: 12px 20px;
+      border-radius: 12px;
+      background: rgba(220, 38, 38, 0.04);
+      border: 1px solid rgba(220, 38, 38, 0.15);
+      max-width: 1100px;
+      width: 100%;
+      text-align: center;
+    }
+
+    .tools-tip-text {
+      font-size: 0.9rem;
+      font-weight: 300;
+      color: #666666;
+      line-height: 1.6;
+    }
+
+    .tools-tip-text b {
+      color: #DC2626;
+      font-weight: 600;
+    }
+
+    /* ── Layout: Video ── */
+    .slide[data-layout="video"] {
+      padding: 30px 100px 100px;
+    }
+
+    .slide-video-player {
+      width: 90%;
+      max-height: 85%;
+      border-radius: 12px;
+      background: #f0f0f0;
+      object-fit: contain;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    /* ── Image Placeholder ── */
+    .img-placeholder {
+      background: #f0f0f0;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      font-size: 0.85rem;
+      font-weight: 400;
+    }
+
+    /* ── Red Background Slides ── */
+    .slide.slide-red-bg {
+      background: #EF3024 !important;
+    }
+
+    .slide.slide-red-bg .slide-number {
+      color: rgba(255, 255, 255, 0.7);
+      text-shadow: none;
+    }
+
+    .slide.slide-red-bg h1,
+    .slide.slide-red-bg h2 {
+      color: #ffffff;
+      text-shadow: none;
+    }
+
+    .slide.slide-red-bg p,
+    .slide.slide-red-bg .quote-text {
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .slide.slide-red-bg .quote-text mark {
+      color: #ffffff;
+      font-weight: 700;
+      text-shadow: none;
+    }
+
+    .slide.slide-red-bg .quote-text::before {
+      color: rgba(255, 255, 255, 0.2);
+    }
+
+    .slide.slide-red-bg .slide-cta {
+      font-size: clamp(1rem, 2vw, 1.3rem);
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.85);
+      text-align: center;
+      margin-top: 30px;
+      padding: 14px 28px;
+      border: 1.5px solid rgba(255, 255, 255, 0.3);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .slide.slide-red-bg .slide-credit {
+      font-size: 0.8rem;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.5);
+      margin-top: 20px;
+      letter-spacing: 1px;
+    }
+
+    /* ── Comparison Grid (Slide 2) ── */
+    .comparison-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 1100px;
+      gap: 20px;
+    }
+
+    .comparison-grid {
+      display: flex;
+      gap: 24px;
+      width: 100%;
+      align-items: stretch;
+    }
+
+    .comparison-col {
+      flex: 1;
+      padding: 28px 24px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .col-old {
+      background: #f7f7f7;
+      border: 1px solid #e0e0e0;
+      border-top: 4px solid #999;
+    }
+
+    .col-new {
+      background: rgba(220, 38, 38, 0.03);
+      border: 1px solid rgba(220, 38, 38, 0.15);
+      border-top: 4px solid #DC2626;
+    }
+
+    .comparison-col h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      text-align: right;
+    }
+
+    .col-old h3 {
+      color: #888;
+    }
+
+    .col-new h3 {
+      color: #DC2626;
+    }
+
+    .comparison-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .comparison-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .col-old .comparison-list li {
+      color: #888;
+      font-weight: 300;
+    }
+
+    .col-new .comparison-list li {
+      color: #1a1a1a;
+      font-weight: 500;
+    }
+
+    .comparison-list li svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .col-old .comparison-list li svg {
+      stroke: #999;
+    }
+
+    .col-new .comparison-list li svg {
+      stroke: #DC2626;
+    }
+
+    .comparison-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 56px;
+    }
+
+    .comparison-arrow svg {
+      width: 40px;
+      height: 40px;
+      stroke: #DC2626;
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 6px rgba(220, 38, 38, 0.3));
+    }
+
+    /* ── RACI Visual (Slide 4) ── */
+    .raci-flow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      flex-shrink: 0;
+    }
+
+    .raci-node {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .raci-node-circle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .raci-node-circle.raci-r { background: #DC2626; }
+    .raci-node-circle.raci-a { background: #2563EB; }
+    .raci-node-circle.raci-c { background: #D97706; }
+    .raci-node-circle.raci-i { background: #6B7280; }
+
+    .raci-node-label {
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #666;
+      text-align: center;
+      max-width: 90px;
+    }
+
+    .raci-connector {
+      width: 2px;
+      height: 24px;
+      background: rgba(220, 38, 38, 0.2);
+    }
+
+    /* ── Slide Note / Callout ── */
+    .slide-note {
+      padding: 14px 18px;
+      border-radius: 10px;
+      background: rgba(220, 38, 38, 0.06);
+      border: 1.5px solid rgba(220, 38, 38, 0.25);
+      width: 100%;
+      margin-top: 12px;
+    }
+
+    .slide-note-text {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #DC2626;
+      line-height: 1.5;
+      text-align: right;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .slide {
+        padding: 60px 32px;
+      }
+
+      .slide[data-layout="content"] {
+        padding: 60px 32px;
+      }
+
+      .slide[data-layout="split"] {
+        flex-direction: column;
+        padding: 60px 32px;
+      }
+
+      .slide[data-layout="about"] {
+        flex-direction: column;
+      }
+
+      .slide[data-layout="prd"] {
+        flex-direction: column;
+      }
+
+      .slide[data-layout="mvp"] {
+        flex-direction: column;
+      }
+
+      .nav-buttons {
+        padding: 0 12px;
+      }
+
+      .nav-btn {
+        width: 44px;
+        height: 44px;
+      }
+
+      .dot-nav {
+        bottom: 20px;
+        gap: 8px;
+        padding: 8px 16px;
+      }
+
+      .cards-grid,
+      .agents-cards {
+        flex-direction: column;
+      }
+
+      .tools-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-cards {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .contact-card:nth-child(-n+4),
+      .contact-card:nth-child(5),
+      .contact-card:nth-child(6),
+      .contact-card:nth-child(7) {
+        grid-column: span 1;
+      }
+
+      .checklist-wrap {
+        flex-direction: column;
+        gap: 40px;
+      }
+
+      .mvp-visual {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .comparison-grid {
+        flex-direction: column;
+      }
+
+      .comparison-arrow {
+        transform: rotate(90deg);
+        width: auto;
+        height: 56px;
+      }
+
+      .raci-flow {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar" id="progressBar"></div>
+
+  <!-- Slideshow -->
+  <div class="slideshow" id="slideshow">
+
+    <!-- Slide 1 — Opening Hook (Red BG) -->
+    <div class="slide active slide-red-bg" data-layout="title">
+      <img src="לוגו קמפוס.png" alt="לוגו קמפוס" style="height:50px;object-fit:contain;filter:brightness(0) invert(1);margin-bottom:24px;">
+      <span class="slide-number">אגף משאבי אנוש | אסטרטגיה 2026</span>
+      <h1>HR as the Owner of<br>the AI Workforce</h1>
+      <p>מ״מארגן קורסים״ לאדריכל של כוח העבודה העתידי.</p>
+      <img src="לוגו בנק.png" alt="לוגו בנק הפועלים" style="height:32px;object-fit:contain;filter:brightness(0) invert(1);margin-top:28px;opacity:0.7;">
+    </div>
+
+    <!-- Slide 2 — The Shift (Comparison) -->
+    <div class="slide" data-layout="cards">
+      <span class="slide-number">The Shift</span>
+      <h1>הטרנספורמציה של תפקיד ה-HR</h1>
+
+      <div class="comparison-section" style="margin-top:28px;">
+        <div class="comparison-grid">
+          <!-- Right column: Old (in RTL this appears on the right) -->
+          <div class="comparison-col col-old">
+            <h3>התפקיד המסורתי</h3>
+            <ul class="comparison-list">
+              <li>
+                <svg viewBox="0 0 24 24"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+                ארגון הדרכות וקורסים
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                גיוס לפי טייטלים קבועים
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+                מדידת שביעות רצון
+              </li>
+            </ul>
+          </div>
+
+          <!-- Arrow -->
+          <div class="comparison-arrow">
+            <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 5 5 12 12 19"/></svg>
+          </div>
+
+          <!-- Left column: New (in RTL this appears on the left) -->
+          <div class="comparison-col col-new">
+            <h3>בעידן ה-AI</h3>
+            <ul class="comparison-list">
+              <li>
+                <svg viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                ניהול פורטפוליו כישורים (Skills Adoption)
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+                עיצוב מחדש של תפקידים (Role Redesign)
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                ממשל, אתיקה וניהול סיכונים (Governance)
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                מדידת אימפקט עסקי וערך
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 3 — Four Strategic Pillars (Cards) -->
+    <div class="slide" data-layout="cards">
+      <span class="slide-number">Strategic Pillars</span>
+      <h1>המנדט החדש שלנו</h1>
+
+      <div class="cards-grid" style="margin-top:28px;">
+        <div class="content-card">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <span class="card-title">Workforce Planning & Skills</span>
+          <span class="card-desc">מיפוי תפקידים בסיכון/שינוי. הגדרת כישורים (Skills-First) ולא רק תארים.</span>
+        </div>
+        <div class="content-card">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></div>
+          <span class="card-title">Role Redesign (RACI)</span>
+          <span class="card-desc">חלוקת עבודה חדשה: אדם vs. מכונה. הגדרת Human-in-the-Loop.</span>
+        </div>
+        <div class="content-card">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg></div>
+          <span class="card-title">Change & Adoption</span>
+          <span class="card-desc">הובלת OKRs לאימוץ כלים. שינוי התנהגותי ומנגנוני תגמול.</span>
+        </div>
+        <div class="content-card">
+          <div class="card-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          <span class="card-title">Governance & Ethics</span>
+          <span class="card-desc">ניהול סיכונים רגולטוריים. שמירה על הוגנות ואחריות.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 4 — RACI Deep Dive -->
+    <div class="slide" data-layout="prd" style="background:#f9f9f9;">
+      <div class="prd-content">
+        <span class="slide-number">Deep Dive</span>
+        <h1>מודל עבודה היברידי: אדם – AI</h1>
+        <p class="prd-subtitle">דוגמה: ניתוח סיכוני אשראי</p>
+
+        <div class="prd-items">
+          <div class="prd-item" style="border-right:4px solid #DC2626;">
+            <span class="prd-item-icon" style="background:rgba(220,38,38,0.12);"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span>
+            <div>
+              <strong style="color:#DC2626;">R — Responsible (המבצע)</strong><br>
+              <span style="color:#666;">AI Agent — מבצע את איסוף הדאטה והניתוח הראשוני</span>
+            </div>
+          </div>
+          <div class="prd-item" style="border-right:4px solid #2563EB;">
+            <span class="prd-item-icon" style="background:rgba(37,99,235,0.1);"><svg viewBox="0 0 24 24" style="stroke:#2563EB;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><polyline points="17 11 19 13 23 9"/></svg></span>
+            <div>
+              <strong style="color:#2563EB;">A — Accountable (האחראי הבלעדי)</strong><br>
+              <span style="color:#666;">מנהל הסיכונים האנושי — חתימה סופית, שיקול דעת</span>
+            </div>
+          </div>
+          <div class="prd-item" style="border-right:4px solid #D97706;">
+            <span class="prd-item-icon" style="background:rgba(217,119,6,0.1);"><svg viewBox="0 0 24 24" style="stroke:#D97706;"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></span>
+            <div>
+              <strong style="color:#D97706;">C — Consulted (היועץ)</strong><br>
+              <span style="color:#666;">מודל שפה / יועץ משפטי — בדיקת הלימה</span>
+            </div>
+          </div>
+          <div class="prd-item" style="border-right:4px solid #6B7280;">
+            <span class="prd-item-icon" style="background:rgba(107,114,128,0.1);"><svg viewBox="0 0 24 24" style="stroke:#6B7280;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></span>
+            <div>
+              <strong style="color:#6B7280;">I — Informed (המעודכן)</strong><br>
+              <span style="color:#666;">הלקוח / המערכת הבנקאית</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="slide-note">
+          <div class="slide-note-text">⚠️ תהליכים רגולטוריים = תמיד Human Accountable</div>
+        </div>
+      </div>
+
+      <div class="prd-visual">
+        <div class="raci-flow">
+          <div class="raci-node">
+            <div class="raci-node-circle raci-r">R</div>
+            <span class="raci-node-label">AI Agent</span>
+          </div>
+          <div class="raci-connector"></div>
+          <div class="raci-node">
+            <div class="raci-node-circle raci-a">A</div>
+            <span class="raci-node-label">מנהל הסיכונים</span>
+          </div>
+          <div class="raci-connector"></div>
+          <div class="raci-node">
+            <div class="raci-node-circle raci-c">C</div>
+            <span class="raci-node-label">יועץ משפטי</span>
+          </div>
+          <div class="raci-connector"></div>
+          <div class="raci-node">
+            <div class="raci-node-circle raci-i">I</div>
+            <span class="raci-node-label">הלקוח / המערכת</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 5 — Roadmap & KPIs (Timeline) -->
+    <div class="slide" data-layout="timeline">
+      <span class="slide-number">Execution Plan</span>
+      <h1>מפת דרכים: 180 הימים הקרובים</h1>
+      <div class="timeline-track">
+        <div class="tl-item">
+          <div class="tl-node"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg></div>
+          <span class="tl-year">Q1</span>
+          <span class="tl-title">מיפוי וזיהוי</span>
+          <span class="tl-desc">בחירת 3-5 Use Cases לפיילוט</span>
+        </div>
+        <div class="tl-item">
+          <div class="tl-node"><svg viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg></div>
+          <span class="tl-year">Q1</span>
+          <span class="tl-title">תשתית</span>
+          <span class="tl-desc">הקמת פורום היגוי (HR, Tech, Biz, Legal)</span>
+        </div>
+        <div class="tl-item">
+          <div class="tl-node"><svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+          <span class="tl-year">Q2</span>
+          <span class="tl-title">הטמעה</span>
+          <span class="tl-desc">מסלולי Upskilling · יעד: 70% שימוש שבועי</span>
+        </div>
+        <div class="tl-item">
+          <div class="tl-node"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+          <span class="tl-year">Q2</span>
+          <span class="tl-title">מדידה</span>
+          <span class="tl-desc">קיצור SLA ב-20% · אימפקט עסקי</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 6 — Closing (Red BG) -->
+    <div class="slide slide-red-bg" data-layout="quote">
+      <p class="quote-text" style="font-size:clamp(1.6rem,3.5vw,2.6rem);max-width:900px;line-height:1.6;">הטכנולוגיה היא המנוע, אבל <mark>האנשים הם ההגה</mark>. אנחנו הנהגים.</p>
+      <div class="slide-cta">מתחילים במיפוי הכישורים בצוותים שלכם מחר בבוקר.</div>
+      <div class="slide-credit">אגף משאבי אנוש | בנק הפועלים</div>
+    </div>
+
+  </div>
+
+  <!-- Navigation Buttons -->
+  <div class="nav-buttons">
+    <!-- Next (right arrow — appears on LEFT in RTL) -->
+    <button class="nav-btn" id="nextBtn" aria-label="Next slide">
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <!-- Previous (left arrow — appears on RIGHT in RTL) -->
+    <button class="nav-btn" id="prevBtn" aria-label="Previous slide">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+  </div>
+
+  <!-- Dot Navigation -->
+  <div class="dot-nav" id="dotNav"></div>
+
+  <!-- Keyboard Hint -->
+  <div class="keyboard-hint" id="keyboardHint">Use ← → arrow keys to navigate</div>
+
+  <script>
+    (() => {
+      const slides = document.querySelectorAll('.slide');
+      const dotNav = document.getElementById('dotNav');
+      const prevBtn = document.getElementById('prevBtn');
+      const nextBtn = document.getElementById('nextBtn');
+      const progressBar = document.getElementById('progressBar');
+      const keyboardHint = document.getElementById('keyboardHint');
+      let current = 0;
+      let isAnimating = false;
+
+      // Slide sound effects (empty — no audio files yet)
+      const slideSounds = {};
+
+      // Build dot navigation
+      slides.forEach((_, i) => {
+        const dot = document.createElement('button');
+        dot.classList.add('dot');
+        if (i === 0) dot.classList.add('active');
+        dot.setAttribute('aria-label', `Go to slide ${i + 1}`);
+        dot.addEventListener('click', () => goTo(i));
+        dotNav.appendChild(dot);
+      });
+
+      function updateProgress() {
+        const pct = ((current + 1) / slides.length) * 100;
+        progressBar.style.width = pct + '%';
+      }
+
+      function updateButtons() {
+        nextBtn.disabled = current === 0;
+        prevBtn.disabled = current === slides.length - 1;
+      }
+
+      function goTo(index) {
+        if (index === current || isAnimating) return;
+        isAnimating = true;
+
+        const direction = index > current ? 'left' : 'right';
+        const prev = slides[current];
+        const next = slides[index];
+
+        // Exit current slide
+        prev.classList.remove('active');
+        prev.classList.add(direction === 'left' ? 'exit-left' : 'exit-right');
+
+        // Prepare incoming slide
+        next.style.transform = direction === 'left' ? 'translateX(-40px)' : 'translateX(40px)';
+        next.classList.add('active');
+
+        // Force reflow so the transform applies before transition
+        void next.offsetWidth;
+        next.style.transform = '';
+
+        // Update dots
+        document.querySelectorAll('.dot').forEach((d, i) => {
+          d.classList.toggle('active', i === index);
+        });
+
+        current = index;
+        updateProgress();
+        updateButtons();
+
+        // Play sound effect if one exists for this slide
+        if (slideSounds[index]) {
+          slideSounds[index].currentTime = 0;
+          slideSounds[index].play();
+        }
+
+        setTimeout(() => {
+          prev.classList.remove('exit-left', 'exit-right');
+          isAnimating = false;
+        }, 500);
+      }
+
+      function next() {
+        if (current < slides.length - 1) goTo(current + 1);
+      }
+
+      function prev() {
+        if (current > 0) goTo(current - 1);
+      }
+
+      nextBtn.addEventListener('click', prev);
+      prevBtn.addEventListener('click', next);
+
+      // Keyboard navigation (RTL: ArrowLeft = next, ArrowRight = prev)
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') next();
+        if (e.key === 'ArrowRight') prev();
+        keyboardHint.classList.add('hidden');
+      });
+
+      // Touch / swipe support
+      let touchStartX = 0;
+      document.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      });
+      document.addEventListener('touchend', (e) => {
+        const diff = e.changedTouches[0].screenX - touchStartX;
+        if (Math.abs(diff) > 60) {
+          if (diff > 0) next();
+          else prev();
+        }
+      });
+
+      // Init
+      updateProgress();
+      updateButtons();
+
+      // Hide keyboard hint after 5 seconds
+      setTimeout(() => keyboardHint.classList.add('hidden'), 5000);
+    })();
+  </script>
+
+</body>
+</html>
